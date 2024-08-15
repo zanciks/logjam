@@ -1,0 +1,18 @@
+.info {
+	border: 1px red solid;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.infoName {
+	border: 1px blue solid;
+}
+
+#info-container {
+	border: 1px green solid;
+}
+
+.infoValue {
+	border: 1px yellow solid;
+}
