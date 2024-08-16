@@ -26,9 +26,7 @@ fn begin_search(name: String, re: String, file_name: String, folder_path: String
             let file = File::open(&full_path).or_else(|_| File::create(&full_path))
                 .expect("Could not open or create log file!");
             let mut reader = BufReader::new(file);
-            if let Err(_e) = reader.seek(SeekFrom::Start(position)) {
-                // not in use rn
-            }
+            let _ = reader.seek(SeekFrom::Start(position));
             position = metadata(&full_path).map_or(0, |meta| meta.len());
             println!("{}", position);
             let mut lines = reader.lines();
@@ -44,7 +42,7 @@ fn begin_search(name: String, re: String, file_name: String, folder_path: String
                 },
                 _ => ()
             }
-            thread::sleep(Duration::from_secs(1));
+            thread::sleep(Duration::from_secs(5));
         }
     });
 }
