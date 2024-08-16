@@ -2,7 +2,7 @@
 <data>
 	<element>
 	   <elementName>GameVersion</elementName>
-	   <pattern>; Factorio (.*) \(</pattern>
-	   <fileName>factorio-current.log</fileName>
+	   <pattern>regex for game version (.*)</pattern>
+	   <fileName>name-of-game-log.log</fileName>
 	</element>
 </data>
