@@ -1,6 +1,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tauri::generate_handler;
+use tauri::{generate_handler, generate_context};
 mod log_parser;
 
 fn main() {
@@ -9,6 +9,6 @@ fn main() {
         log_parser::parse_xml,
         log_parser::begin_search
     ])
-    .run(tauri::generate_context!())
+    .run(generate_context!())
     .expect("error while running tauri application");
 }
