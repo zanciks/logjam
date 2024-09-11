@@ -12,7 +12,6 @@ struct Config {
 }
 
 #[derive(Debug, Deserialize)]
-
 struct PluginInfo {
     name: String,
     version: String,
