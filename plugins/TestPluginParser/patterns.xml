@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<data>
-	<element>
-	   <elementName>GameVersion</elementName>
-	   <pattern>regex for game version (.*)</pattern>
-	   <fileName>name-of-game-log.log</fileName>
-	</element>
-</data>

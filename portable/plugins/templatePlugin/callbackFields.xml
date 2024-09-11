@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+	<element>
+	   <elementName>Version</elementName>
+	   <pattern>version: (.*)!</pattern>
+	   <fileName>log_file.txt</fileName>
+	</element>
+</data>
