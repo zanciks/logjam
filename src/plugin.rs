@@ -1,34 +1,37 @@
-#![deny(warnings)]
-#![allow(dead_code)]
+use crate::manifest::Manifest;
+use crate::callback_fields::{self, CallbackField};
 
 use std::fs;
 use std::path::Path;
-use serde_derive::Deserialize;
 
-#[derive(Debug, Deserialize)]
-struct Config {
-    info: PluginInfo,
-    options: Options,
+pub struct Plugin {
+    manifest: Manifest,
+    callback_fields: Vec<CallbackField>,
 }
 
-#[derive(Debug, Deserialize)]
-struct PluginInfo {
-    name: String,
-    version: String,
+impl Plugin {
+    pub fn new(plugin_path: &Path) -> Self {
+        let manifest = Manifest::parse(plugin_path);
+        let callback_fields = callback_fields::list_all(plugin_path);
+
+        Self { manifest, callback_fields }
+    } 
 }
 
-#[derive(Debug, Deserialize)]
-struct Options {
-    log_file_location: String,
-}
+// plugins are valid if, and _only_ if they are a folder and have a manifest.toml file
+pub fn get_all_plugins() -> Vec<Plugin> {
+    let mut plugins: Vec<Plugin> = vec![];
+    let path = Path::new("plugins");
 
-pub fn parse_plugin_toml() {
-    let current_dir = std::env::current_dir().unwrap();
-    println!("Current directory: {:?}", current_dir);
+    if let Ok(entries) = fs::read_dir(path) {
+        for entry in entries {
+            if let Ok(entry) = entry {
+                if entry.path().is_dir() && entry.path().join("manifest.toml").exists() {
+                    plugins.push(Plugin::new(&entry.path()));
+                }
+            }
+        }
+    }
 
-    let path = Path::new("portable").join("manifest.toml");
-    let toml: String = fs::read_to_string(&path).unwrap();
-    println!("{}", toml);
-    let decoded: Config = toml::from_str(&toml).unwrap();
-    println!("{:#?}", decoded);
+    return plugins;
 }

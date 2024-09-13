@@ -1,6 +1,9 @@
+#![allow(dead_code)]
+
 mod plugin;
+mod manifest;
+mod callback_fields;
 
 fn main() {
-    println!("Hello, world!");
-    plugin::parse_plugin_toml();
+    let _ = plugin::get_all_plugins();
 }
