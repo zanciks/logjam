@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <data>
-	<element>
-	   <elementName>Version</elementName>
+	<callbackField>
+	   <name>Version</name>
 	   <pattern>version: (.*)!</pattern>
 	   <fileName>log_file.txt</fileName>
-	</element>
+	</callbackField>
+	<callbackField>
+	   <name>AnotherLine</name>
+	   <pattern>wild card (.*) yeah</pattern>
+	   <fileName>log_file.txt</fileName>
+	</callbackField>
 </data>
