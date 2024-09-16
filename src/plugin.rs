@@ -4,7 +4,8 @@ use crate::callback_fields::{self, CallbackField};
 use std::fs::{self, File, metadata};
 use std::path::Path;
 use std::thread;
-use std::io::{BufReader, Seek, SeekFrom};
+use std::io::{BufReader, Seek, SeekFrom, BufRead};
+use std::time::Duration;
 
 #[derive(Debug)]
 pub struct Plugin {
@@ -44,6 +45,8 @@ impl Plugin {
         for callback_field in &self.callback_fields {
             let log_file_location = self.manifest.options.log_file_location.clone();
             let log_file_name = callback_field.file_name.clone().unwrap();
+            let regular_expression = callback_field.pattern.clone().unwrap();
+
             thread::spawn(move || {
                 let file_path = Path::new(&log_file_location).join(&log_file_name);
                 let mut position: u64 = 0; // keeps track of the last-read byte for continuing
@@ -54,6 +57,16 @@ impl Plugin {
                     let mut reader = BufReader::new(file);
                     let _ = reader.seek(SeekFrom::Start(position));
                     position = metadata(&file_path).map_or(0, |meta| meta.len());
+
+                    let mut lines = reader.lines();
+                    while let Some(Ok(line)) = lines.next() {
+                        if let Some(captures) = regular_expression.captures(&line) {
+                            if let Some(first) = captures.get(1) {
+                                println!("{}", first.as_str());
+                            }
+                        }
+                    }
+                    thread::sleep(Duration::from_secs(5));
                 }
 
             });
