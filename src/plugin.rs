@@ -4,6 +4,7 @@ use crate::callback_fields::{self, CallbackField};
 use std::fs;
 use std::path::Path;
 
+#[derive(Debug)]
 pub struct Plugin {
     manifest: Manifest,
     callback_fields: Vec<CallbackField>,
@@ -19,6 +20,7 @@ impl Plugin {
 }
 
 // plugins are valid if, and _only_ if they are a folder and have a manifest.toml file
+// callback fields are optional
 pub fn get_all_plugins() -> Vec<Plugin> {
     let mut plugins: Vec<Plugin> = vec![];
     let path = Path::new("plugins");
