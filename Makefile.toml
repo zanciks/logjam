@@ -10,3 +10,4 @@ dependencies = ["build", "create-portable"]
 [tasks.create-portable]
 script_runner = "@shell"
 command = "mkdir"
+args = ["portable"]
