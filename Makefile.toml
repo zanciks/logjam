@@ -1,0 +1,3 @@
+[tasks.default]
+script = "cp target/debug/logjam portable/logjam"
+dependencies = ["build"]
