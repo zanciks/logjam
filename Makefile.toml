@@ -1,3 +1,7 @@
 [tasks.default]
-script = "cp target/debug/logjam portable/logjam"
+alias = "install"
+
+[tasks.install]
+command = "mv"
+args = ["target/debug/logjam", "portable/"]
 dependencies = ["build"]
