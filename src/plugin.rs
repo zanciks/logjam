@@ -16,7 +16,7 @@ pub struct Plugin {
 impl Plugin {
     pub fn new(plugin_path: &Path) -> Self {
         let manifest = Manifest::parse(plugin_path);
-        let callback_fields = callback_fields::list_all(plugin_path);
+        let callback_fields = callback_fields::CallbackField::list_all(plugin_path);
 
         Self { manifest, callback_fields }
     } 
