@@ -9,5 +9,4 @@ TODO:
 6. Create and link program with browser plugins, to send data to forms (Jira, Github, ADO)
 
 To create a portable version of logjam, run
-`cargo install --force cargo-make`
-`cargo make`
+`cargo install --force cargo-make` followed by `cargo make`
