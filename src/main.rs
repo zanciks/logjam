@@ -1,8 +1,8 @@
 #![allow(dead_code)]
 
-mod plugin;
-mod manifest;
 mod callback_fields;
+mod manifest;
+mod plugin;
 
 fn main() {
     let plugins = plugin::Plugin::get_all_plugins();

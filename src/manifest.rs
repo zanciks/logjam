@@ -1,6 +1,6 @@
+use serde_derive::Deserialize;
 use std::fs;
 use std::path::Path;
-use serde_derive::Deserialize;
 
 #[derive(Debug, Deserialize)]
 pub struct Manifest {
@@ -20,7 +20,7 @@ pub struct Options {
 }
 
 impl Manifest {
-    pub fn parse(plugin_path: &Path) -> Self  {
+    pub fn parse(plugin_path: &Path) -> Self {
         let path = plugin_path.join("manifest.toml");
         let toml: String = fs::read_to_string(&path).unwrap();
         let plugin: Manifest = toml::from_str(&toml).unwrap();

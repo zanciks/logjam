@@ -1,10 +1,10 @@
-use crate::manifest::Manifest;
 use crate::callback_fields::CallbackField;
+use crate::manifest::Manifest;
 
-use std::fs::{self, File, metadata};
+use std::fs::{self, metadata, File};
+use std::io::{BufRead, BufReader, Seek, SeekFrom};
 use std::path::Path;
 use std::thread;
-use std::io::{BufReader, Seek, SeekFrom, BufRead};
 use std::time::Duration;
 
 #[derive(Debug)]
@@ -18,8 +18,11 @@ impl Plugin {
         let manifest = Manifest::parse(plugin_path);
         let callback_fields = CallbackField::list_all(plugin_path);
 
-        Self { manifest, callback_fields }
-    } 
+        Self {
+            manifest,
+            callback_fields,
+        }
+    }
 }
 
 impl Plugin {
@@ -52,7 +55,8 @@ impl Plugin {
                 let mut position: u64 = 0; // keeps track of the last-read byte for continuing
 
                 loop {
-                    let file = File::open(&file_path).or_else(|_| File::create(&file_path))
+                    let file = File::open(&file_path)
+                        .or_else(|_| File::create(&file_path))
                         .expect("Could not open for create file to search!");
                     let mut reader = BufReader::new(file);
                     let _ = reader.seek(SeekFrom::Start(position));
@@ -68,9 +72,7 @@ impl Plugin {
                     }
                     thread::sleep(Duration::from_secs(5));
                 }
-
             });
         }
     }
 }
-
