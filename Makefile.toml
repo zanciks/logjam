@@ -8,7 +8,7 @@ args = ["target/debug/logjam", "portable/"]
 dependencies = ["build", "create-portable"]
 
 [tasks.create-portable]
-ignore_errors=true
+ignore_errors = true
 script_runner = "@shell"
 command = "mkdir"
 args = ["portable"]
