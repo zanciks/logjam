@@ -44,8 +44,8 @@ impl Plugin {
     pub fn begin_search(&self) {
         for callback_field in &self.callback_fields {
             let log_file_location = self.manifest.options.log_file_location.clone();
-            let log_file_name = callback_field.file_name.clone().unwrap();
-            let regular_expression = callback_field.pattern.clone().unwrap();
+            let log_file_name = callback_field.file_name.clone();
+            let regular_expression = callback_field.pattern.clone();
 
             thread::spawn(move || {
                 let file_path = Path::new(&log_file_location).join(&log_file_name);

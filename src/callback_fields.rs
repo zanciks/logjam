@@ -5,18 +5,14 @@ use regex::Regex;
 
 #[derive(Debug)]
 pub struct CallbackField {
-    pub name: Option<String>,
-    pub pattern: Option<Regex>,
-    pub file_name: Option<String>,
+    pub name: String,
+    pub pattern: Regex,
+    pub file_name: String,
 }
 
-impl Default for CallbackField {
-    fn default() -> Self {
-        CallbackField {
-            name: None,
-            pattern: None,
-            file_name: None
-        }
+impl CallbackField {
+    fn new(name: String, pattern: Regex, file_name: String) -> Self {
+        Self { name, pattern, file_name }
     }
 }
 
@@ -28,23 +24,25 @@ pub fn list_all(plugin_path: &Path) -> Vec<CallbackField> {
         let document = Document::parse(&xml).unwrap();
         for node in document.descendants() {
             if node.has_tag_name("callbackField") {
-                let mut callback_field = CallbackField::default();
+                let mut name: Option<String> = None;
+                let mut pattern: Option<Regex> = None;
+                let mut file_name: Option<String> = None;
 
                 for child in node.descendants() {
                     match child.tag_name().name() {
-                        "name"     => { callback_field.name      = child.text().map(|s| s.to_string()) },
-                        "fileName" => { callback_field.file_name = child.text().map(|s| s.to_string()) },
+                        "name"     => { name      = child.text().map(|s| s.to_string()) },
+                        "fileName" => { file_name = child.text().map(|s| s.to_string()) },
                         "pattern"  => { 
                             if child.text().is_some() { // ugly, but if its none, then the Option<Regex> will remain None
-                                callback_field.pattern = Regex::new(child.text().unwrap()).ok()
+                                pattern = Regex::new(child.text().unwrap()).ok()
                             }
                         },
                         _ => ()
                     }
                 }
 
-                if callback_field.name.is_some() && callback_field.pattern.is_some() && callback_field.file_name.is_some() {
-                    callback_fields.push(callback_field);
+                if name.is_some() && pattern.is_some() && file_name.is_some() {
+                    callback_fields.push(CallbackField::new(name.unwrap(), pattern.unwrap(), file_name.unwrap()));
                 }
             }
         }
