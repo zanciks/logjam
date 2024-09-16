@@ -1,8 +1,10 @@
 use crate::manifest::Manifest;
 use crate::callback_fields::{self, CallbackField};
 
-use std::fs;
+use std::fs::{self, File, metadata};
 use std::path::Path;
+use std::thread;
+use std::io::{BufReader, Seek, SeekFrom};
 
 #[derive(Debug)]
 pub struct Plugin {
@@ -19,21 +21,43 @@ impl Plugin {
     } 
 }
 
-// plugins are valid if, and _only_ if they are a folder and have a manifest.toml file
-// callback fields are optional
-pub fn get_all_plugins() -> Vec<Plugin> {
-    let mut plugins: Vec<Plugin> = vec![];
-    let path = Path::new("plugins");
+impl Plugin {
+    // plugins are valid if, and _only_ if they are a folder and have a manifest.toml file
+    // callback fields are optional
+    pub fn get_all_plugins() -> Vec<Plugin> {
+        let mut plugins: Vec<Plugin> = vec![];
+        let path = Path::new("plugins");
 
-    if let Ok(entries) = fs::read_dir(path) {
-        for entry in entries {
-            if let Ok(entry) = entry {
-                if entry.path().is_dir() && entry.path().join("manifest.toml").exists() {
-                    plugins.push(Plugin::new(&entry.path()));
+        if let Ok(entries) = fs::read_dir(path) {
+            for entry in entries {
+                if let Ok(entry) = entry {
+                    if entry.path().is_dir() && entry.path().join("manifest.toml").exists() {
+                        plugins.push(Plugin::new(&entry.path()));
+                    }
                 }
             }
         }
+        return plugins;
     }
 
-    return plugins;
+    pub fn begin_search(&self) {
+        for callback_field in &self.callback_fields {
+            let log_file_location = self.manifest.options.log_file_location.clone();
+            let log_file_name = callback_field.file_name.clone().unwrap();
+            thread::spawn(move || {
+                let file_path = Path::new(&log_file_location).join(&log_file_name);
+                let mut position: u64 = 0; // keeps track of the last-read byte for continuing
+
+                loop {
+                    let file = File::open(&file_path).or_else(|_| File::create(&file_path))
+                        .expect("Could not open for create file to search!");
+                    let mut reader = BufReader::new(file);
+                    let _ = reader.seek(SeekFrom::Start(position));
+                    position = metadata(&file_path).map_or(0, |meta| meta.len());
+                }
+
+            });
+        }
+    }
 }
+

@@ -5,6 +5,6 @@ mod manifest;
 mod callback_fields;
 
 fn main() {
-    let plugins = plugin::get_all_plugins();
+    let plugins = plugin::Plugin::get_all_plugins();
     println!("{:?}", plugins);
 }

@@ -1,11 +1,12 @@
 use std::path::Path;
 use std::fs;
 use roxmltree::Document;
+use regex::Regex;
 
 #[derive(Debug)]
 pub struct CallbackField {
     pub name: Option<String>,
-    pub pattern: Option<String>,
+    pub pattern: Option<Regex>,
     pub file_name: Option<String>,
 }
 
@@ -32,8 +33,12 @@ pub fn list_all(plugin_path: &Path) -> Vec<CallbackField> {
                 for child in node.descendants() {
                     match child.tag_name().name() {
                         "name"     => { callback_field.name      = child.text().map(|s| s.to_string()) },
-                        "pattern"  => { callback_field.pattern   = child.text().map(|s| s.to_string()) },
                         "fileName" => { callback_field.file_name = child.text().map(|s| s.to_string()) },
+                        "pattern"  => { 
+                            if child.text().is_some() { // ugly, but if its none, then the Option<Regex> will remain None
+                                callback_field.pattern = Regex::new(child.text().unwrap()).ok()
+                            }
+                        },
                         _ => ()
                     }
                 }
