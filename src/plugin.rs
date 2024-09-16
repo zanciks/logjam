@@ -56,7 +56,7 @@ impl Plugin {
                         .expect("Could not open for create file to search!");
                     let mut reader = BufReader::new(file);
                     let _ = reader.seek(SeekFrom::Start(position));
-                    position = metadata(&file_path).map_or(0, |meta| meta.len());
+                    position = metadata(&file_path).map_or(0, |meta| meta.len()); // move to end of file
 
                     let mut lines = reader.lines();
                     while let Some(Ok(line)) = lines.next() {
