@@ -6,5 +6,7 @@ mod plugin;
 
 fn main() {
     let plugins = plugin::Plugin::get_all_plugins();
-    println!("{:?}", plugins);
+    for plugin in &plugins {
+        plugin.begin_search();
+    }
 }
