@@ -7,3 +7,6 @@ TODO:
 4. Create GUI, possibly leaving it up to each plugin to provide with templates
 5. Create example plugins for games with public bug logging (Minecraft for example)
 6. Create and link program with browser plugins, to send data to forms (Jira, Github, ADO)
+
+To create a portable version of logjam, run
+`cargo install --force cargo-make` followed by `cargo make`
