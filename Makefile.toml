@@ -5,7 +5,12 @@ alias = "install"
 script_runner = "@shell"
 command = "mv"
 args = ["target/debug/logjam", "portable/"]
-dependencies = ["build", "create-portable"]
+dependencies = ["build", "create-portable", "remove"]
+
+[tasks.remove]
+script_runner = "@shell"
+command = "rm"
+args = ["portable/logjam"]
 
 [tasks.create-portable]
 ignore_errors = true
