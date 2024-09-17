@@ -55,9 +55,10 @@ impl Plugin {
                 let mut position: u64 = 0; // keeps track of the last-read byte for continuing
 
                 loop {
+                    println!("{}", &file_path)
                     let file = File::open(&file_path)
                         .or_else(|_| File::create(&file_path))
-                        .expect("Could not open for create file to search!");
+                        .expect("Could not open or create file to search!");
                     let mut reader = BufReader::new(file);
                     let _ = reader.seek(SeekFrom::Start(position));
                     position = metadata(&file_path).map_or(0, |meta| meta.len()); // move to end of file

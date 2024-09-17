@@ -9,4 +9,5 @@ fn main() {
     for plugin in &plugins {
         plugin.begin_search();
     }
+    loop {}
 }
