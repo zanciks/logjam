@@ -55,7 +55,6 @@ impl Plugin {
                 let mut position: u64 = 0; // keeps track of the last-read byte for continuing
 
                 loop {
-                    println!("{}", &file_path)
                     let file = File::open(&file_path)
                         .or_else(|_| File::create(&file_path))
                         .expect("Could not open or create file to search!");

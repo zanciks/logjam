@@ -1,6 +1,7 @@
 use serde_derive::Deserialize;
 use std::fs;
 use std::path::Path;
+use directories::BaseDirs;
 
 #[derive(Debug, Deserialize)]
 pub struct Manifest {
@@ -25,5 +26,11 @@ impl Manifest {
         let toml: String = fs::read_to_string(&path).unwrap();
         let plugin: Manifest = toml::from_str(&toml).unwrap();
         return plugin;
+    }
+}
+
+fn change_base_dir(path: &mut String) {
+    if let Some(base_dirs) = BaseDirs::new() {
+        *path = path.replace("%appdata%", &base_dirs.config_dir().to_string_lossy());
     }
 }
