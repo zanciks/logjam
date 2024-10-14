@@ -1,8 +1,8 @@
 use crate::callback_fields::CallbackField;
 use crate::manifest::Manifest;
 
-use std::fs::{self, metadata, File};
-use std::io::{BufRead, BufReader, Seek, SeekFrom};
+use std::fs::{self, File};
+use std::io::{Seek, SeekFrom, Read};
 use std::path::Path;
 use std::thread;
 use std::time::Duration;
@@ -52,24 +52,25 @@ impl Plugin {
 
             thread::spawn(move || {
                 let file_path = Path::new(&log_file_location).join(&log_file_name);
-                let mut position: u64 = 0; // keeps track of the last-read byte for continuing
-
+                let mut file = File::open(file_path).unwrap();
+                let mut contents = vec![];
+                let mut position = 0;
+                
                 loop {
-                    let file = File::open(&file_path)
-                        .or_else(|_| File::create(&file_path))
-                        .expect("Could not open or create file to search!");
-                    let mut reader = BufReader::new(file);
-                    let _ = reader.seek(SeekFrom::Start(position));
-                    position = metadata(&file_path).map_or(0, |meta| meta.len()); // move to end of file
+                    contents.truncate(0);
+                    let _ = file.seek(SeekFrom::Start(position as u64));
+                    position += file.read_to_end(&mut contents).unwrap();
 
-                    let mut lines = reader.lines();
-                    while let Some(Ok(line)) = lines.next() {
-                        if let Some(captures) = regular_expression.captures(&line) {
-                            if let Some(first) = captures.get(1) {
-                                println!("{}", first.as_str());
+                    if let Ok(text) = String::from_utf8(contents.clone()) {
+                        for line in text.lines() {
+                            if let Some(captures) = regular_expression.captures(&line) {
+                                if let Some(first) = captures.get(1) {
+                                    println!("{}", first.as_str());
+                                }
                             }
                         }
                     }
+
                     thread::sleep(Duration::from_secs(5));
                 }
             });
