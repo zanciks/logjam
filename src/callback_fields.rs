@@ -35,9 +35,8 @@ impl CallbackField {
                             "name" => name = child.text().map(|s| s.to_string()),
                             "fileName" => file_name = child.text().map(|s| s.to_string()),
                             "pattern" => {
-                                if child.text().is_some() {
-                                    // ugly, but if its none, then the Option<Regex> will remain None
-                                    pattern = Regex::new(child.text().unwrap()).ok()
+                                if let Some(text) = child.text() {
+                                    pattern = Regex::new(text).ok()
                                 }
                             }
                             _ => (),
