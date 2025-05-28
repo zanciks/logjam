@@ -8,7 +8,7 @@ impl LogjamPlugin for TemplatePlugin {
     fn title(&self) -> RString {
         RString::from("Template Plugin")
     }
-    fn render(&mut self, _ui: &UiWrapper) {
-        
+    fn render(&mut self, ui: &UiWrapper) {
+        ui.label("This is a label from a dll!")
     }
 }

@@ -10,4 +10,8 @@ impl UiWrapper {
         let ui = ui as *mut egui::Ui;
         UiWrapper { ui }
     }
+    pub fn label(&self, text: &str) {
+        let ui = unsafe { self.ui.as_mut().unwrap() };
+        ui.label(text);
+    }
 }
