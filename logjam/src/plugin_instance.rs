@@ -42,7 +42,9 @@ impl PluginInstance {
         for entry in std::fs::read_dir(exe_dir).unwrap() {
             let path = entry.unwrap().path();
             if path.extension().is_some_and(|ext| ext == "dll") {
-                plugins.push(PluginInstance::load(path.to_str().unwrap()))
+                if path.to_str().is_some_and(|name| !name.contains("logjam_derive")) {
+                    plugins.push(PluginInstance::load(path.to_str().unwrap()))
+                }
             }
         }
 

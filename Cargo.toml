@@ -1,10 +1,10 @@
 [workspace]
 resolver = "3"
 members = [
+    "logjam",
     "logjam_derive",
     "logjam_core",
     "template_plugin",
-    "logjam",
 ]
 
 [workspace.dependencies]
