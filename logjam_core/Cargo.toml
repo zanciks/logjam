@@ -1,0 +1,9 @@
+[package]
+name = "logjam_core"
+version = "1.0.0"
+edition = "2024"
+
+[dependencies]
+logjam_derive = { path = "../logjam_derive" }
+abi_stable.workspace = true
+eframe.workspace = true

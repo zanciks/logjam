@@ -1,0 +1,8 @@
+[package]
+name = "template_plugin"
+version = "1.0.0"
+edition = "2024"
+
+[dependencies]
+abi_stable.workspace = true
+logjam_core = { path = "../logjam_core" } 

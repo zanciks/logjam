@@ -1,0 +1,14 @@
+[workspace]
+resolver = "3"
+members = [
+    "logjam_derive",
+    "logjam_core",
+    "template_plugin",
+    "logjam",
+]
+
+[workspace.dependencies]
+abi_stable = "0.11.3"
+eframe = "0.31.1"
+egui_dock = "0.16.0"
+libloading = "0.8.8"

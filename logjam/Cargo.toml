@@ -1,0 +1,11 @@
+[package]
+name = "logjam"
+version = "1.0.0"
+edition = "2024"
+
+[dependencies]
+logjam_core = { path = "../logjam_core" }
+abi_stable.workspace = true
+eframe.workspace = true
+egui_dock.workspace = true
+libloading.workspace = true
