@@ -11,7 +11,7 @@ impl LogjamPlugin for TemplatePlugin {
     fn render(&mut self, ui: &UiWrapper) {
         ui.label("This is a label from a dll!");
         if ui.button("dll button~").clicked() {
-            println!("button was clicked in a dll!!");
+            ui.label("one frame test label");
         }
     }
 }
