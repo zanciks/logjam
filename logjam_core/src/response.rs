@@ -2,13 +2,13 @@ use eframe::egui;
 
 #[repr(C)]
 pub struct Response {
-    response: *mut egui::Response,
+    response: *const egui::Response,
 }
 
 impl From<egui::Response> for Response {
-    fn from(mut from: egui::Response) -> Self {
+    fn from(from: egui::Response) -> Self {
         Self {
-            response: &mut from as *mut egui::Response,
+            response: &from as *const egui::Response,
         }
     }
 }
