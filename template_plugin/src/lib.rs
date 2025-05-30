@@ -8,7 +8,7 @@ impl LogjamPlugin for TemplatePlugin {
     fn title(&self) -> RString {
         RString::from("Template Plugin")
     }
-    fn render(&mut self, ui: &Ui) {
+    fn render(&mut self, ui: &mut Ui) {
         ui.label("This is a label from a dll!");
         if ui.button("dll button~").clicked() {
             println!("Button clicked!");
