@@ -5,11 +5,13 @@ pub struct Ui {
     ui: *mut egui::Ui,
 }
 
-impl Ui {
-    pub fn new(ui: &mut egui::Ui) -> Self {
-        let ui = ui as *mut egui::Ui;
-        Ui { ui }
+impl From<&mut egui::Ui> for Ui {
+    fn from(ui: &mut egui::Ui) -> Self {
+        Self { ui: ui as *mut egui::Ui }
     }
+}
+
+impl Ui {
     pub fn label(&self, text: &str) -> egui::Response {
         let ui = unsafe { self.ui.as_mut().unwrap() };
         ui.label(text).into()
