@@ -88,4 +88,39 @@ impl Response {
     pub fn drag_stopped(&self) -> bool {
         self.response.drag_stopped()
     }
+    /*
+    pub fn drag_stopped_by(&self, button: PointerButton) -> bool {
+        self.response.drag_stopped_by(button)
+    }
+    pub fn drag_delta(&self) -> Vec2 {
+        self.response.drag_delta()
+    }
+    pub fn drag_motion(&self) -> Vec2 {
+        self.response.drag_motion()
+    }
+    pub fn dnd_set_drag_payload<Payload: Any + Send + Sync>(&self, payload: Payload) {
+        self.response.dnd_set_drag_payload(payload)
+    }
+    pub fn dnd_hover_payload<Payload: Any + Send + Sync>(&self) -> Option<Arc<Payload>> {
+        self.response.dnd_hover_payload(payload)
+    }
+    pub fn dnd_release_payload<Payload: Any + Send + Sync>(&self) -> Option<Arc<Payload>> {
+        self.response.dnd_release_payload(payload)
+    }
+    pub fn interact_pointer_pos(&self) -> Option<Pos2> {
+        self.response.interact_pointer_pos()
+    }
+    pub fn hover_pos(&self) -> Option<Pos2> {
+        self.response.hover_pos()
+    }
+    */
+    pub fn is_pointer_button_down_on(&self) -> bool {
+        self.response.is_pointer_button_down_on()
+    }
+    pub fn changed(&self) -> bool {
+        self.response.changed() // will this even work? needs to be tested
+    }
+    pub fn mark_changed(&mut self) {
+        self.response.mark_changed();
+    }
 }
