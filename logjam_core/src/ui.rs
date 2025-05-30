@@ -1,14 +1,14 @@
 use eframe::egui;
 
 #[repr(C)]
-pub struct UiWrapper {
+pub struct Ui {
     ui: *mut egui::Ui,
 }
 
-impl UiWrapper {
+impl Ui {
     pub fn new(ui: &mut egui::Ui) -> Self {
         let ui = ui as *mut egui::Ui;
-        UiWrapper { ui }
+        Ui { ui }
     }
     pub fn label(&self, text: &str) -> egui::Response {
         let ui = unsafe { self.ui.as_mut().unwrap() };
