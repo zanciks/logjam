@@ -1,5 +1,6 @@
 use abi_stable::std_types::RString;
-use logjam_core::{LogjamPlugin, plugin::LogjamPlugin, ui::Ui};
+use logjam_core::{LogjamPlugin, plugin::LogjamPlugin, ui::UiWrapper};
+use eframe::egui::Ui;
 
 #[derive(Default, LogjamPlugin)]
 struct TemplatePlugin;

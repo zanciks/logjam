@@ -14,10 +14,10 @@ pub fn add_test_fn(input: TokenStream) -> TokenStream {
             Box::into_raw(plugin) as *mut std::ffi::c_void
         }
         #[unsafe(no_mangle)]
-        pub extern "C" fn render(ptr: *mut std::ffi::c_void, ui: &mut logjam_core::ui::Ui) {
+        pub extern "C" fn render(ptr: *mut std::ffi::c_void, ui: &mut logjam_core::ui::UiWrapper) {
             if !ptr.is_null() {
                 let plugin = unsafe { &mut *(ptr as *mut #struct_name) as &mut dyn LogjamPlugin };
-                plugin.render(ui);
+                plugin.render(<&mut UiWrapper as Into<&mut Ui>>::into(ui));
             }
         }
         #[unsafe(no_mangle)]

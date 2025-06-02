@@ -8,4 +8,5 @@ crate-type = ["cdylib"]
 
 [dependencies]
 abi_stable.workspace = true
+eframe.workspace = true
 logjam_core = { path = "../logjam_core" } 

@@ -2898,6 +2898,7 @@ name = "template_plugin"
 version = "1.0.0"
 dependencies = [
  "abi_stable",
+ "eframe",
  "logjam_core",
 ]
 

@@ -1,13 +1,13 @@
 use abi_stable::std_types::RString;
 use libloading::{Library, Symbol};
-use logjam_core::ui::Ui;
+use logjam_core::ui::UiWrapper;
 use std::ffi::c_void;
 use std::sync::Arc;
 
 pub struct PluginInstance {
     pub title: String,
     ptr: *mut c_void,
-    render: Symbol<'static, unsafe fn(*mut c_void, &Ui)>,
+    render: Symbol<'static, unsafe fn(*mut c_void, &UiWrapper)>,
     _lib: Arc<Library>,
 }
 
@@ -18,7 +18,7 @@ impl PluginInstance {
             let lib_ref: &'static Library = &*Box::leak(Box::new(Arc::clone(&library)));
 
             let init: Symbol<unsafe fn() -> *mut c_void> = lib_ref.get(b"init").unwrap();
-            let render: Symbol<unsafe fn(*mut c_void, &Ui)> =
+            let render: Symbol<unsafe fn(*mut c_void, &UiWrapper)> =
                 lib_ref.get(b"render").unwrap();
             let title_function: Symbol<unsafe fn(*mut c_void) -> RString> =
                 lib_ref.get(b"title").unwrap();
@@ -53,7 +53,7 @@ impl PluginInstance {
 
         plugins
     }
-    pub fn render(&self, ui: &Ui) {
+    pub fn render(&self, ui: &UiWrapper) {
         unsafe { (self.render)(self.ptr, ui) }
     }
 }
