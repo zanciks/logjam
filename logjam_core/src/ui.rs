@@ -7,7 +7,9 @@ pub struct UiWrapper {
 
 impl From<&mut egui::Ui> for UiWrapper {
     fn from(ui: &mut egui::Ui) -> Self {
-        Self { ui: ui as *mut egui::Ui }
+        Self {
+            ui: ui as *mut egui::Ui,
+        }
     }
 }
 
