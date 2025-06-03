@@ -1,47 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Root>
 	<callbackField>
-		<name>BuildCL</name>
-		<pattern>Engine Version: .+-(.*)\+\+\+</pattern>
-		<file_name>ProjectReplay.log</file_name>
+		<name>Name</name>
+		<pattern>Reg(ex) for searching\.</pattern>
+		<file_name>log.txt</file_name>
+		<hint_text>Shows when hovered</hint_text>
+		<group>false</group>
 	</callbackField>
 	<callbackField>
-		<name>Branch</name>
-		<pattern>Engine Version: .+Replay\+(.*)-</pattern>
-		<file_name>ProjectReplay.log</file_name>
-	</callbackField>
-	<callbackField>
-		<name>Config</name>
-		<pattern>Engine Version: .+Replay.+-(.*)</pattern>
-		<file_name>ProjectReplay.log</file_name>
-	</callbackField>
-	<callbackField>
-		<name>Submap</name>
-		<pattern>LogBlueprintUserMessages: \[None] ->(.*)</pattern>
-		<file_name>ProjectReplay.log</file_name>
-		<hint_text>Press `=` in game to update this!</hint_text>
-	</callbackField>
-	<callbackField>
-		<name>GameplayExperience</name>
-		<pattern>LogBlueprintUserMessages: \[None] --->(.*)</pattern>
-		<file_name>ProjectReplay.log</file_name>
-		<hint_text>Press `=` in game to update this!</hint_text>
-	</callbackField>
-	<callbackField>
-		<name>DistrictSeed</name>
-		<pattern>District Seed (.*)</pattern>
-		<file_name>ProjectReplay.log</file_name>
-		<hint_text>Press `=` in game to update this!</hint_text>
-	</callbackField>
-	<callbackField>
-		<name>LatestTrope</name>
-		<pattern>GenerateEncounter - (.*)</pattern>
-		<file_name>ProjectReplay.log</file_name>
-	</callbackField>
-	<callbackField>
-		<name>CurrentlyViewing</name>
-		<pattern>Viewing: (.*?) </pattern>
-		<file_name>ProjectReplay.log</file_name>
-		<hint_text>Press `=` in game to update this!</hint_text>
+		<name>Second thing!</name>
+		<pattern>Reg(ex) for searching\.</pattern>
+		<file_name>log.txt</file_name>
 	</callbackField>
 </Root>

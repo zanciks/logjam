@@ -4,13 +4,9 @@
     "description": [
 		{ "text": "*Description:* \n" },
 		{ "text": "Put your description here! \n\n" },
-		
+
 		{ "text": "*Steps to Reproduce:* \n" },
-		{ "text": "# Launch Judas {Branch} {Config} \n\n" },
-	
-		{ "text": "*Notes:* \n" },
-		{ "text": "* CL: {BuildCL} {Branch} {Config} \n" },
-		{ "text": "* Gameplay Experience: {GameplayExperience} \n" }
+		{ "text": "# Launch Game: {Name} \n\n" },
 	]
   }
 ]
