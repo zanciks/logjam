@@ -7,7 +7,5 @@ edition = "2024"
 logjam_core = { path = "../logjam_core" }
 abi_stable.workspace = true
 eframe.workspace = true
-env_logger.workspace = true
 egui_dock.workspace = true
 libloading.workspace = true
-log.workspace = true

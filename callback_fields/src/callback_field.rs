@@ -1,6 +1,16 @@
-use std::{fs::{metadata, File}, io::{BufRead, BufReader, Read, Seek, SeekFrom}, path::{Path, PathBuf}, sync::{atomic::{AtomicBool, Ordering}, Arc, Mutex}, thread, time::Duration};
 use regex::Regex;
 use roxmltree::Document;
+use std::{
+    fs::{File, metadata},
+    io::{BufRead, BufReader, Read, Seek, SeekFrom},
+    path::{Path, PathBuf},
+    sync::{
+        Arc, Mutex,
+        atomic::{AtomicBool, Ordering},
+    },
+    thread,
+    time::Duration,
+};
 
 pub struct CallbackField {
     pub name: String,
@@ -20,7 +30,7 @@ impl CallbackField {
         pattern: Option<Regex>,
         file_name: Option<String>,
         hint_text: Option<String>,
-        group: bool
+        group: bool,
     ) -> Self {
         let name = name.unwrap_or_default();
         let pattern = pattern.unwrap();
@@ -30,7 +40,13 @@ impl CallbackField {
         let stop_signal = Arc::new(AtomicBool::new(false));
 
         CallbackField {
-            name, pattern, file_name, hint_text, group, result, stop_signal
+            name,
+            pattern,
+            file_name,
+            hint_text,
+            group,
+            result,
+            stop_signal,
         }
     }
     pub fn get_callback_fields() -> Vec<CallbackField> {
@@ -44,7 +60,8 @@ impl CallbackField {
             .expect("Could not open or create file to search!");
 
         let mut contents = String::new();
-        file.read_to_string(&mut contents).expect("Couldn't read callback fields file to string!");
+        file.read_to_string(&mut contents)
+            .expect("Couldn't read callback fields file to string!");
         let document = Document::parse(&contents).expect("callback_fields.xml isn't valid XML!");
 
         for node in document.descendants() {
@@ -65,9 +82,11 @@ impl CallbackField {
         for child in node.descendants() {
             match child.tag_name().name() {
                 "name" => name = child.text().map(|s| s.to_string()),
-                "pattern" => pattern = child.text().map(|s| {
-                    Regex::new(&s).expect("Failed to make regular expression!")
-                }),
+                "pattern" => {
+                    pattern = child
+                        .text()
+                        .map(|s| Regex::new(&s).expect("Failed to make regular expression!"))
+                }
                 "file_name" => file_name = child.text().map(|s| s.to_string()),
                 "hint_text" => hint_text = child.text().map(|s| s.to_string()),
                 "group" => group = child.text().map(|s| s == "true").unwrap_or(false),
@@ -85,7 +104,7 @@ impl CallbackField {
         let file_path = folder_path.join(self.file_name.clone());
         let re = self.pattern.clone();
         let should_group = self.group.clone();
-        
+
         let stop_signal: Arc<AtomicBool> = Arc::clone(&self.stop_signal);
         let result = Arc::clone(&self.result);
 
@@ -95,14 +114,16 @@ impl CallbackField {
             let mut position: u64 = 0;
 
             loop {
-                if stop_signal.load(Ordering::Relaxed) { break }
+                if stop_signal.load(Ordering::Relaxed) {
+                    break;
+                }
                 let file = File::open(&full_path)
                     .or_else(|_| File::create(&full_path))
                     .expect("Could not open or create file to search!");
 
                 let mut reader = BufReader::new(file);
                 let _ = reader.seek(SeekFrom::Start(position));
-                position = metadata(&full_path).map_or(0, |meta| meta.len()); 
+                position = metadata(&full_path).map_or(0, |meta| meta.len());
 
                 let mut lines = reader.lines();
                 while let Some(Ok(line)) = lines.next() {
@@ -136,6 +157,11 @@ impl CallbackField {
         self.stop_signal.store(true, Ordering::Relaxed);
     }
     pub fn result(&self) -> String {
-        self.result.lock().unwrap().as_deref().unwrap_or_default().to_string()
+        self.result
+            .lock()
+            .unwrap()
+            .as_deref()
+            .unwrap_or_default()
+            .to_string()
     }
 }
