@@ -1,3 +1,5 @@
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
 mod app;
 mod plugin_instance;
 mod tab_viewer;
@@ -7,9 +9,6 @@ fn main() -> eframe::Result {
     eframe::run_native(
         "Logjam",
         options,
-        Box::new(|cc| {
-            cc.egui_ctx.set_pixels_per_point(1.25);
-            Ok(Box::<app::Logjam>::default())
-        }),
+        Box::new(|cc| Ok(Box::new(app::Logjam::default(&cc.egui_ctx)))),
     )
 }

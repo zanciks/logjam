@@ -7,28 +7,36 @@ use std::path::PathBuf;
 use abi_stable::std_types::RString;
 use callback_field::CallbackField;
 use eframe::egui::{self, Grid, Ui};
+use egui_file_dialog::{FileDialog, FileDialogConfig};
 use logjam_core::ui::UiWrapper;
 use logjam_core::{LogjamPlugin, plugin::LogjamPlugin};
 use manifest::Manifest;
+use toml_edit::{DocumentMut, value};
 
 #[derive(LogjamPlugin)]
 struct CallbackFieldsPlugin {
-    _log_folder: PathBuf,
+    log_folder: PathBuf,
     callback_fields: Vec<CallbackField>,
 
     manifests: Vec<Manifest>,
     selected_manifest: usize,
 
     selected_format: String,
+    file_dialog: FileDialog,
 }
 
-impl CallbackFieldsPlugin {
+impl Default for CallbackFieldsPlugin {
     fn default() -> Self {
-        let log_folder = std::env::current_exe()
-            .unwrap()
-            .parent()
-            .unwrap()
-            .to_path_buf();
+        let log_folder = std::path::Path::new("C:\\")
+            .join("Program Files (x86)")
+            .join("Steam")
+            .join("steamapps")
+            .join("common")
+            .join("Project Replay")
+            .join("ProjectReplay")
+            .join("Saved")
+            .join("Logs");
+
         let manifests = manifest::Manifest::load_manifests().unwrap();
 
         let callback_fields = CallbackField::get_callback_fields();
@@ -36,13 +44,27 @@ impl CallbackFieldsPlugin {
             callback_field.begin_search(&log_folder);
         }
 
-        Self {
-            _log_folder: log_folder,
+        let file_dialog = FileDialog::with_config(FileDialogConfig {
+            as_modal: true,
+            title_bar: false,
+            default_size: egui::Vec2::new(448.0, 220.0),
+            anchor: Some((egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)),
+            ..Default::default()
+        });
+
+        let mut plugin = Self {
+            log_folder: log_folder,
             callback_fields,
             manifests,
             selected_manifest: 0,
-            selected_format: "Plain".to_string(),
+            selected_format: "Plain Text".to_string(),
+            file_dialog,
+        };
+
+        if let Err(e) = plugin.load_preferences() {
+            eprintln!("{}", e)
         }
+        return plugin;
     }
 }
 
@@ -52,38 +74,75 @@ impl LogjamPlugin for CallbackFieldsPlugin {
     }
     fn render(&mut self, ui: &mut Ui) {
         ui.horizontal(|ui| {
+            ui.label("Selected template:");
             egui::ComboBox::from_id_salt("manifests_combobox")
                 .selected_text(self.manifests[self.selected_manifest].get_title())
                 .show_ui(ui, |ui| {
                     for (i, manifest) in &mut self.manifests.iter().enumerate() {
                         ui.selectable_value(&mut self.selected_manifest, i, manifest.get_title());
                     }
-                })
+                });
+            ui.label("Click to select log folder:");
+            if ui.button("Open").clicked() {
+                self.file_dialog.pick_directory();
+            }
         });
+
+        self.file_dialog.update(ui.ctx());
+        if let Some(path) = self.file_dialog.take_picked() {
+            self.log_folder = path.to_path_buf();
+            for callback_field in &self.callback_fields {
+                callback_field.stop_search();
+            }
+            self.callback_fields = CallbackField::get_callback_fields();
+            for callback_field in &self.callback_fields {
+                callback_field.begin_search(&self.log_folder);
+            }
+            if let Err(e) = self.save_preferences() {
+                eprintln!("{}", e)
+            }
+        }
 
         ui.horizontal(|ui| {
             ui.label("Click to copy description!");
-            if ui.button("").clicked() {
+            if ui.button("📋").clicked() {
                 if let Err(e) = match self.selected_format.as_str() {
-                    "Plain" => copy_to_clipboard::copy_plain(
+                    "Plain Text" => copy_to_clipboard::copy_plain(
                         &self.manifests[self.selected_manifest],
                         &self.callback_fields,
                     ),
-                    "Jira" => Ok(()),
-                    "ADO" => Ok(()),
-                    "Hansoft" => Ok(()),
+                    // "Jira" => Ok(()),
+                    // "ADO" => Ok(()),
+                    "Hansoft" => copy_to_clipboard::copy_hansoft(
+                        &self.manifests[self.selected_manifest],
+                        &self.callback_fields,
+                    ),
                     _ => Ok(()),
                 } {
                     eprintln!("{}", e);
                 }
             }
-            ui.label("Copy for:");
+
+            ui.label("Copy Format:");
             egui::ComboBox::from_id_salt("copy_formats")
                 .selected_text(&self.selected_format)
                 .show_ui(ui, |ui| {
-                    ui.selectable_value(&mut self.selected_format, "Plain".to_string(), "Plain");
+                    ui.selectable_value(
+                        &mut self.selected_format,
+                        "Plain Text".to_string(),
+                        "Plain Text",
+                    );
+                    // ui.selectable_value(&mut self.selected_format, "Jira".to_string(), "Jira");
+                    // ui.selectable_value(&mut self.selected_format, "ADO".to_string(), "ADO");
+                    ui.selectable_value(
+                        &mut self.selected_format,
+                        "Hansoft".to_string(),
+                        "Hansoft",
+                    );
                 });
         });
+
+        ui.separator();
 
         Grid::new("callback_fields_grid")
             .striped(true)
@@ -98,5 +157,43 @@ impl LogjamPlugin for CallbackFieldsPlugin {
                     ui.end_row();
                 }
             });
+    }
+}
+
+impl CallbackFieldsPlugin {
+    fn save_preferences(&mut self) -> Result<(), Box<dyn std::error::Error>> {
+        let file_path = std::env::current_exe()?
+            .parent()
+            .unwrap()
+            .join("preferences.toml");
+        let mut content = std::fs::read_to_string(&file_path)?;
+
+        content = content.replace("\\", "/");
+        let mut doc = content.parse::<DocumentMut>()?;
+
+        doc["callback_fields"]["file_location"] = value(self.log_folder.to_string_lossy().as_ref());
+        std::fs::write(&file_path, doc.to_string())?;
+
+        Ok(())
+    }
+    fn load_preferences(&mut self) -> Result<(), Box<dyn std::error::Error>> {
+        let file_path = std::env::current_exe()?
+            .parent()
+            .unwrap()
+            .join("preferences.toml");
+        let mut content = std::fs::read_to_string(&file_path)?;
+
+        content = content.replace("\\", "/");
+        let doc = content.parse::<DocumentMut>()?;
+
+        if let Some(log_folder) = doc
+            .get("callback_fields")
+            .and_then(|cf| cf.get("file_location"))
+            .and_then(|fl| fl.as_str())
+        {
+            self.log_folder = log_folder.into();
+        }
+
+        Ok(())
     }
 }

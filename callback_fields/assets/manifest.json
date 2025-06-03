@@ -1,10 +1,16 @@
 [
   {
     "title": "ExampleOne",
-    "description": "# Heading 1\nContent here."
-  },
-  {
-    "title": "ExampleTwo",
-    "description": "## Heading 2\nMore content here."
+    "description": [
+		{ "text": "*Description:* \n" },
+		{ "text": "Put your description here! \n\n" },
+		
+		{ "text": "*Steps to Reproduce:* \n" },
+		{ "text": "# Launch Judas {Branch} {Config} \n\n" },
+	
+		{ "text": "*Notes:* \n" },
+		{ "text": "* CL: {BuildCL} {Branch} {Config} \n" },
+		{ "text": "* Gameplay Experience: {GameplayExperience} \n" }
+	]
   }
 ]

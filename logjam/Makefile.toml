@@ -1,0 +1,59 @@
+[tasks.default]
+dependencies = ["move-assets"]
+
+[tasks.move-plugin]
+script_runner = "@rust"
+script = '''
+use std::{env, fs, path::Path};
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+	let name = env::var("CARGO_MAKE_CRATE_NAME")?;
+	let target_dir = env::var("CARGO_MAKE_CRATE_TARGET_DIRECTORY")?;
+	let profile = env::var("CARGO_MAKE_PROFILE")?;
+	
+	let mut target_profile = Path::new(&target_dir).join("x86_64-pc-windows-msvc");
+	if profile == "release" {
+	    target_profile = target_profile.join("release");
+	} else {
+	    target_profile = target_profile.join("debug");
+	}
+
+	let exe_path = target_profile.join(format!("{}.exe", name));
+	let plugins_path = Path::new(&target_dir).join("portable");
+	
+	if exe_path.exists() {
+		fs::create_dir_all(&plugins_path)?;
+		fs::copy(&exe_path, plugins_path.join(format!("{}.exe", name)))?;
+	}
+	
+    Ok(())
+}
+'''
+
+[tasks.move-assets]
+script_runner = "@rust"
+script = '''
+use std::{env, fs, path::Path};
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let assets_path = env::var("CARGO_MAKE_WORKING_DIRECTORY")?;
+    let target_path = env::var("CARGO_MAKE_CRATE_TARGET_DIRECTORY")?;
+
+    let source_path = Path::new(&assets_path).join("assets");
+    let destination_path = Path::new(&target_path).join("portable");
+
+    println!("Copying assets from {:?} to {:?}", source_path, destination_path);
+	fs::create_dir_all(&destination_path)?;
+
+    for entry in fs::read_dir(source_path)? {
+        let file = entry?;
+        let src = file.path();
+        let dst = destination_path.join(file.file_name());
+
+        println!("Copying {:?} -> {:?}", src, dst);
+        fs::copy(&src, &dst)?;
+    }
+
+    Ok(())
+}
+'''

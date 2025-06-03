@@ -38,16 +38,12 @@ impl PluginInstance {
         let mut plugins = vec![];
         let exe_path = std::env::current_exe().unwrap();
         let exe_dir = exe_path.parent().unwrap();
+        let plugins_path = exe_dir.join("plugins");
 
-        for entry in std::fs::read_dir(exe_dir).unwrap() {
+        for entry in std::fs::read_dir(plugins_path).unwrap() {
             let path = entry.unwrap().path();
             if path.extension().is_some_and(|ext| ext == "dll") {
-                if path
-                    .to_str()
-                    .is_some_and(|name| !name.contains("logjam_derive"))
-                {
-                    plugins.push(PluginInstance::load(path.to_str().unwrap()))
-                }
+                plugins.push(PluginInstance::load(path.to_str().unwrap()))
             }
         }
 

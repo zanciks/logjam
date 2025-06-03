@@ -108,6 +108,8 @@ impl CallbackField {
         let stop_signal: Arc<AtomicBool> = Arc::clone(&self.stop_signal);
         let result = Arc::clone(&self.result);
 
+        println!("{:?}", file_path);
+
         thread::spawn(move || {
             let mut last_line_matched = false;
             let full_path = Path::new(&file_path);
@@ -153,7 +155,7 @@ impl CallbackField {
             thread::sleep(Duration::from_secs(1));
         });
     }
-    pub fn _stop_search(&self) {
+    pub fn stop_search(&self) {
         self.stop_signal.store(true, Ordering::Relaxed);
     }
     pub fn result(&self) -> String {

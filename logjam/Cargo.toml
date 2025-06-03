@@ -6,6 +6,8 @@ edition = "2024"
 [dependencies]
 logjam_core = { path = "../logjam_core" }
 abi_stable.workspace = true
+dark-light = "2.0.0"
 eframe.workspace = true
 egui_dock.workspace = true
 libloading.workspace = true
+toml_edit.workspace = true
