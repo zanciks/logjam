@@ -3,6 +3,10 @@ mod plugin_instance;
 mod tab_viewer;
 
 fn main() -> eframe::Result {
+    env_logger::init();
+
+    log::info!("Info log!");
+
     let options = eframe::NativeOptions::default();
     eframe::run_native(
         "Logjam",

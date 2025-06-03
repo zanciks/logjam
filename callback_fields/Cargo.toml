@@ -11,4 +11,5 @@ eframe.workspace = true
 abi_stable.workspace = true
 regex.workspace = true
 roxmltree.workspace = true
+serde_json.workspace = true
 logjam_core = { path = "../logjam_core" } 
