@@ -26,6 +26,8 @@ impl PluginInstance {
             let ptr = init();
             let title = title_function(ptr).to_string();
 
+            log::info!("Loading plugin with name {}", &title);
+
             PluginInstance {
                 title,
                 ptr,

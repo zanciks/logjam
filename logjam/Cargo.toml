@@ -10,4 +10,6 @@ dark-light = "2.0.0"
 eframe.workspace = true
 egui_dock.workspace = true
 libloading.workspace = true
+log.workspace = true
+simple_logger.workspace = true
 toml_edit.workspace = true

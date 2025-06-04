@@ -6,7 +6,7 @@
 		{ "text": "Put your description here! \n\n" },
 
 		{ "text": "*Steps to Reproduce:* \n" },
-		{ "text": "# Launch Game: {Name} \n\n" },
+		{ "text": "# Launch Game: {Name} \n\n" }
 	]
   }
 ]

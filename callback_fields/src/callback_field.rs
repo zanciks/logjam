@@ -66,6 +66,7 @@ impl CallbackField {
 
         for node in document.descendants() {
             if node.has_tag_name("callbackField") {
+                log::info!("Registering callback field: {}", node.tag_name().name());
                 callback_fields.push(Self::get_callback_field(node));
             }
         }
@@ -98,17 +99,27 @@ impl CallbackField {
             return CallbackField::new(name, pattern, file_name, hint_text, group);
         }
 
+        log::error!("Callback Field is missing one or more fields!");
+        log::error!("name: {:?}", name);
+        log::error!("pattern: {:?}", pattern);
+        log::error!("file_name: {:?}", file_name);
+        log::error!("hint_text: {:?}", hint_text);
+        log::error!("group: {:?}", group);
+
         panic!("One or more callback fields is missing a required field!")
     }
-    pub fn begin_search(&self, folder_path: &PathBuf) {
-        let file_path = folder_path.join(self.file_name.clone());
+    pub fn begin_search(&self, folder_path: &Option<PathBuf>) {
+        if folder_path.is_none() {
+            log::info!("No folder is present for callback field {}", &self.name);
+            return;
+        }
+
+        let file_path = folder_path.clone().unwrap().join(self.file_name.clone());
         let re = self.pattern.clone();
         let should_group = self.group.clone();
 
         let stop_signal: Arc<AtomicBool> = Arc::clone(&self.stop_signal);
         let result = Arc::clone(&self.result);
-
-        println!("{:?}", file_path);
 
         thread::spawn(move || {
             let mut last_line_matched = false;

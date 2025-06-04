@@ -52,7 +52,7 @@ impl Manifest {
                         }
                     }
                 }
-                println!("{}: {}", manifest.title, manifest.description);
+                log::info!("Manifest loaded: {}", manifest.title);
                 manifests.push(manifest);
             }
         }

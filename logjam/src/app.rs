@@ -14,7 +14,7 @@ impl Logjam {
 
         let mut logjam = Logjam { plugins };
         if let Err(e) = logjam.load_preferences(ctx) {
-            eprintln!("{}", e);
+            log::error!("{}", e);
         }
 
         return logjam;

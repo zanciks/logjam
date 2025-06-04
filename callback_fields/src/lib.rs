@@ -15,7 +15,7 @@ use toml_edit::{DocumentMut, value};
 
 #[derive(LogjamPlugin)]
 struct CallbackFieldsPlugin {
-    log_folder: PathBuf,
+    log_folder: Option<PathBuf>,
     callback_fields: Vec<CallbackField>,
 
     manifests: Vec<Manifest>,
@@ -27,33 +27,20 @@ struct CallbackFieldsPlugin {
 
 impl Default for CallbackFieldsPlugin {
     fn default() -> Self {
-        let log_folder = std::path::Path::new("C:\\")
-            .join("Program Files (x86)")
-            .join("Steam")
-            .join("steamapps")
-            .join("common")
-            .join("Project Replay")
-            .join("ProjectReplay")
-            .join("Saved")
-            .join("Logs");
-
-        let manifests = manifest::Manifest::load_manifests().unwrap();
-
+        let log_folder = None;
+        let manifests = Manifest::load_manifests().unwrap();
         let callback_fields = CallbackField::get_callback_fields();
-        for callback_field in &callback_fields {
-            callback_field.begin_search(&log_folder);
-        }
 
         let file_dialog = FileDialog::with_config(FileDialogConfig {
             as_modal: true,
             title_bar: false,
-            default_size: egui::Vec2::new(448.0, 220.0),
+            default_size: egui::Vec2::new(700.0, 350.0),
             anchor: Some((egui::Align2::CENTER_CENTER, egui::Vec2::ZERO)),
             ..Default::default()
         });
 
         let mut plugin = Self {
-            log_folder: log_folder,
+            log_folder,
             callback_fields,
             manifests,
             selected_manifest: 0,
@@ -62,9 +49,15 @@ impl Default for CallbackFieldsPlugin {
         };
 
         if let Err(e) = plugin.load_preferences() {
-            eprintln!("{}", e)
+            log::error!("{}", e)
         }
-        return plugin;
+
+        for callback_field in &plugin.callback_fields {
+            // needs to be called after loading preferences
+            callback_field.begin_search(&plugin.log_folder);
+        }
+
+        plugin
     }
 }
 
@@ -90,7 +83,7 @@ impl LogjamPlugin for CallbackFieldsPlugin {
 
         self.file_dialog.update(ui.ctx());
         if let Some(path) = self.file_dialog.take_picked() {
-            self.log_folder = path.to_path_buf();
+            self.log_folder = Some(path.to_path_buf());
             for callback_field in &self.callback_fields {
                 callback_field.stop_search();
             }
@@ -99,7 +92,7 @@ impl LogjamPlugin for CallbackFieldsPlugin {
                 callback_field.begin_search(&self.log_folder);
             }
             if let Err(e) = self.save_preferences() {
-                eprintln!("{}", e)
+                log::error!("{}", e)
             }
         }
 
@@ -119,7 +112,7 @@ impl LogjamPlugin for CallbackFieldsPlugin {
                     ),
                     _ => Ok(()),
                 } {
-                    eprintln!("{}", e);
+                    log::error!("{}", e);
                 }
             }
 
@@ -171,9 +164,11 @@ impl CallbackFieldsPlugin {
         content = content.replace("\\", "/");
         let mut doc = content.parse::<DocumentMut>()?;
 
-        doc["callback_fields"]["file_location"] = value(self.log_folder.to_string_lossy().as_ref());
-        std::fs::write(&file_path, doc.to_string())?;
+        if let Some(log_folder) = &self.log_folder {
+            doc["callback_fields"]["file_location"] = value(log_folder.to_string_lossy().as_ref());
+        }
 
+        std::fs::write(&file_path, doc.to_string())?;
         Ok(())
     }
     fn load_preferences(&mut self) -> Result<(), Box<dyn std::error::Error>> {
@@ -191,7 +186,7 @@ impl CallbackFieldsPlugin {
             .and_then(|cf| cf.get("file_location"))
             .and_then(|fl| fl.as_str())
         {
-            self.log_folder = log_folder.into();
+            self.log_folder = Some(log_folder.into());
         }
 
         Ok(())

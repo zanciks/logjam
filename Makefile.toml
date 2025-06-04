@@ -11,6 +11,17 @@ PROFILE = "release"
 clear = true
 run_task = "move-plugin"
 
+[tasks.run]
+clear = true
+workspace = false
+run_task = { name = "default", fork = true, cleanup_task = "logjam" }
+
+
+[tasks.logjam]
+cwd = "${CARGO_MAKE_CRATE_TARGET_DIRECTORY}/portable/"
+command = "cmd"
+args = ["/C", "logjam.exe"]
+
 [tasks.fmt]
 clear = true
 command = "cargo"
