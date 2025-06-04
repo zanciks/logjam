@@ -30,7 +30,7 @@ impl eframe::App for Logjam {
             .tab_context_menus(false)
             .show(ctx, &mut TabViewer);
 
-        ctx.request_repaint();
+        ctx.request_repaint_after_secs(1.0);
     }
 }
 

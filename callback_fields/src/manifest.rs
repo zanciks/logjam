@@ -80,7 +80,7 @@ impl Manifest {
     pub fn to_hansoft(&self, callback_fields: &Vec<CallbackField>) -> String {
         let mut text = self.description.to_owned();
 
-        text = Regex::new(r"(?m)((?:^\# .+\n?)+)")
+        text = Regex::new(r"(?m)((?:^# .+\n?)+)")
             .unwrap()
             .replace_all(&text, "<OL>$1</OL>")
             .into();
@@ -105,10 +105,52 @@ impl Manifest {
 
         return text;
     }
+    pub fn to_jira(&self, callback_fields: &Vec<CallbackField>) -> String {
+        let mut text = self.description.to_owned();
+
+        // replace ** and *** to indented bullets
+        text = Regex::new(r"(\*+)\s")
+            .unwrap()
+            .replace_all(&text, |caps: &Captures| {
+                let count = caps[1].len();
+                match count {
+                    1 => "* ".to_string(),
+                    _ => {
+                        let tabs = "\t".repeat(count - 1);
+                        format!("{}* ", tabs)
+                    }
+                }
+            })
+            .into();
+        // turning * into ** for bold statements
+        text = Regex::new(r"\*(.*?)\*")
+            .unwrap()
+            .replace_all(&text, "**$1**")
+            .into();
+        // turning # and ## (etc.) into numbered lists
+        text = Regex::new(r"(?m)^(#+)\s")
+            .unwrap()
+            .replace_all(&text, |caps: &Captures| {
+                let count = caps[1].len();
+                println!("{}", count);
+                match count {
+                    1 => "1. ".to_string(),
+                    _ => {
+                        let tabs = "\t".repeat(count - 1);
+                        format!("{}1. ", tabs)
+                    }
+                }
+            })
+            .into();
+
+        text = insert_callback_results(&text, callback_fields);
+
+        return text;
+    }
 }
 
 pub fn insert_callback_results(text: &str, callback_fields: &Vec<CallbackField>) -> String {
-    Regex::new(r"\{(.*?)\}")
+    Regex::new(r"\{(.*?)}")
         .unwrap()
         .replace_all(text, |caps: &Captures| {
             if let Some(matching_field) =

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Root>
 	<callbackField>
-		<name>Name</name>
+		<name>ExampleCallbackField</name>
 		<pattern>Reg(ex) for searching\.</pattern>
 		<file_name>log.txt</file_name>
-		<hint_text>Shows when hovered</hint_text>
+		<hint_text>This text shows when the title is hovered in the app!</hint_text>
 		<group>false</group>
 	</callbackField>
 	<callbackField>
-		<name>Second thing!</name>
+		<name>SecondCallbackField</name>
 		<pattern>Reg(ex) for searching\.</pattern>
 		<file_name>log.txt</file_name>
 	</callbackField>

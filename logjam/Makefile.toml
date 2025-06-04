@@ -9,8 +9,9 @@ use std::{env, fs, path::Path};
 fn main() -> Result<(), Box<dyn std::error::Error>> {
 	let name = env::var("CARGO_MAKE_CRATE_NAME")?;
 	let target_dir = env::var("CARGO_MAKE_CRATE_TARGET_DIRECTORY")?;
-	let profile = env::var("CARGO_MAKE_PROFILE")?;
-	
+	let profile = env::var("PROFILE")?;
+
+
 	let mut target_profile = Path::new(&target_dir).join("x86_64-pc-windows-msvc");
 	if profile == "release" {
 	    target_profile = target_profile.join("release");

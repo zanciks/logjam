@@ -1,12 +1,34 @@
 [
-  {
-    "title": "ExampleOne",
-    "description": [
-		{ "text": "*Description:* \n" },
-		{ "text": "Put your description here! \n\n" },
+	{
+		"title": "Fake Manifest Template",
+		"description": [
+			{ "text": "This is a fake template! \n\n" },
 
-		{ "text": "*Steps to Reproduce:* \n" },
-		{ "text": "# Launch Game: {Name} \n\n" }
-	]
-  }
+			{ "text": "*We can add bold to statements like this!* \n" },
+			{ "text": "_Italics like this_ \n" },
+			{ "text": "Keep in mind that text formatting doesn't work for plain text. \n\n" },
+
+			{ "text": "# We can also \n" },
+			{ "text": "# Make numbered \n" },
+			{ "text": "# Lists like this! \n\n" },
+
+			{ "text": "* Or even \n" },
+			{ "text": "* Unordered lists \n" },
+			{ "text": "* In a similar way! \n\n" },
+
+			{ "text": "When we want to include data from a callback field, do this: \n" },
+			{ "text": "Example Callback Data: {ExampleCallbackField} \n" }
+		]
+	},
+	{
+		"title": "Another bug template!",
+		"description": [
+			{ "text": "This is ANOTHER fake template! \n\n" },
+
+			{ "text": "Because sometimes, you need to have different bug templates. \n" },
+			{ "text": "Keep in mind that you can still call callback fields like this: \n\n" },
+
+			{ "text": "Example Callback Data: {ExampleCallbackField} \n" }
+		]
+	}
 ]

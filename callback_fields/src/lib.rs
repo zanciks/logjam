@@ -6,7 +6,8 @@ use std::path::PathBuf;
 
 use abi_stable::std_types::RString;
 use callback_field::CallbackField;
-use eframe::egui::{self, Grid, Ui};
+use eframe::egui::{self, Align, Layout, Ui};
+use egui_extras::{Column, TableBuilder};
 use egui_file_dialog::{FileDialog, FileDialogConfig};
 use logjam_core::ui::UiWrapper;
 use logjam_core::{LogjamPlugin, plugin::LogjamPlugin};
@@ -104,7 +105,11 @@ impl LogjamPlugin for CallbackFieldsPlugin {
                         &self.manifests[self.selected_manifest],
                         &self.callback_fields,
                     ),
-                    // "Jira" => Ok(()),
+                    "Jira" => copy_to_clipboard::copy_jira(
+                        &self.manifests[self.selected_manifest],
+                        &self.callback_fields,
+                    ),
+                    // "Jira (old)" => Ok(()),
                     // "ADO" => Ok(()),
                     "Hansoft" => copy_to_clipboard::copy_hansoft(
                         &self.manifests[self.selected_manifest],
@@ -125,7 +130,8 @@ impl LogjamPlugin for CallbackFieldsPlugin {
                         "Plain Text".to_string(),
                         "Plain Text",
                     );
-                    // ui.selectable_value(&mut self.selected_format, "Jira".to_string(), "Jira");
+                    ui.selectable_value(&mut self.selected_format, "Jira".to_string(), "Jira");
+                    // ui.selectable_value(&mut self.selected_format, "Jira (old)".to_string(), "Jira (old)");
                     // ui.selectable_value(&mut self.selected_format, "ADO".to_string(), "ADO");
                     ui.selectable_value(
                         &mut self.selected_format,
@@ -137,18 +143,25 @@ impl LogjamPlugin for CallbackFieldsPlugin {
 
         ui.separator();
 
-        Grid::new("callback_fields_grid")
+        TableBuilder::new(ui)
             .striped(true)
-            .num_columns(2)
-            .show(ui, |ui| {
-                for callback_field in &self.callback_fields {
-                    let response = ui.label(&callback_field.name);
-                    if let Some(hint_text) = &callback_field.hint_text {
-                        response.on_hover_text(hint_text);
-                    }
-                    ui.label(callback_field.result());
-                    ui.end_row();
-                }
+            .column(Column::initial(150.0))
+            .column(Column::remainder())
+            .body(|body| {
+                body.rows(15.0, self.callback_fields.len(), |mut row| {
+                    let callback_field = &self.callback_fields[row.index()];
+                    row.col(|ui| {
+                        ui.with_layout(Layout::left_to_right(Align::Center), |ui| {
+                            let response = ui.label(&callback_field.name);
+                            if let Some(hint_text) = &callback_field.hint_text {
+                                response.on_hover_text(hint_text);
+                            }
+                        });
+                    });
+                    row.col(|ui| {
+                        ui.label(callback_field.result());
+                    });
+                });
             });
     }
 }

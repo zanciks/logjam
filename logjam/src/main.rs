@@ -5,10 +5,17 @@ mod plugin_instance;
 mod tab_viewer;
 
 fn main() -> eframe::Result {
-    simple_logger::init_with_level(log::Level::Debug).expect("Could not start logger");
+    simple_logger::init_with_level(log::Level::Info).expect("Could not start logger");
     log::info!("Starting logjam");
 
-    let options = eframe::NativeOptions::default();
+    let options = eframe::NativeOptions {
+        viewport: eframe::egui::ViewportBuilder {
+            inner_size: Some(eframe::egui::Vec2::new(750.0, 300.0)),
+            ..Default::default()
+        },
+        ..Default::default()
+    };
+
     eframe::run_native(
         "Logjam",
         options,
