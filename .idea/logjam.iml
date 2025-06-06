@@ -7,6 +7,11 @@
       <sourceFolder url="file://$MODULE_DIR$/logjam_core/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/logjam_derive/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/template_plugin/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/replay_title_maker/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/logger/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/callback_fields/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/replay_title_maker/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/template_plugin/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />

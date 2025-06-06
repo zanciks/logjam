@@ -9,7 +9,7 @@ impl egui_dock::TabViewer for TabViewer {
         (&tab.title).into()
     }
     fn ui(&mut self, ui: &mut egui::Ui, tab: &mut Self::Tab) {
-        tab.render(&mut ui.into());
+        tab.render(&ui.into());
     }
     fn closeable(&mut self, _tab: &mut Self::Tab) -> bool {
         false

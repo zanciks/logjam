@@ -13,8 +13,8 @@ impl From<&mut egui::Ui> for UiWrapper {
     }
 }
 
-impl<'a> Into<&'a mut egui::Ui> for &'a mut UiWrapper {
-    fn into(self) -> &'a mut egui::Ui {
-        unsafe { self.ui.as_mut().unwrap() }
+impl<'a> From<&'a mut UiWrapper> for &'a mut egui::Ui {
+    fn from(val: &'a mut UiWrapper) -> Self {
+        unsafe { val.ui.as_mut().unwrap() }
     }
 }

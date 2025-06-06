@@ -17,7 +17,7 @@ impl Logjam {
             log::error!("{}", e);
         }
 
-        return logjam;
+        logjam
     }
 }
 

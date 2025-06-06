@@ -14,7 +14,8 @@ run_task = "move-plugin"
 [tasks.run]
 clear = true
 workspace = false
-run_task = { name = "default", fork = true, cleanup_task = "logjam" }
+# run_task = { name = "default", fork = true, cleanup_task = "logjam" }
+run_task = { name = "logjam" }
 
 [tasks.logjam]
 cwd = "${CARGO_MAKE_CRATE_TARGET_DIRECTORY}/portable/"

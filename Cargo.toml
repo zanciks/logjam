@@ -4,8 +4,10 @@ members = [
     "logjam",
     "logjam_derive",
     "logjam_core",
-    "template_plugin",
-    "callback_fields"
+
+    "plugins/template_plugin",
+    "plugins/callback_fields",
+    "plugins/replay_title_maker",
 ]
 
 [workspace.dependencies]
