@@ -4,22 +4,11 @@ members = [
     "logjam",
     "logjam_derive",
     "logjam_core",
-
-    "plugins/template_plugin",
-    "plugins/callback_fields",
-    "plugins/replay_title_maker",
 ]
 
 [workspace.dependencies]
 abi_stable = "0.11.3"
 eframe = "0.31.1"
-egui_extras = "0.31.1"
 egui_dock = "0.16.0"
-egui-file-dialog = "0.10.0"
-simple_logger = "5.0.0"
 libloading = "0.8.8"
 log = "0.4.27"
-regex = "1.11.1"
-roxmltree = "0.20.0"
-serde_json = "*"
-toml_edit = "*"
